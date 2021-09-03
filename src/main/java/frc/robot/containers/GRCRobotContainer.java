@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.ControlConstants;
+import frc.robot.subsystems.climber.ClimberOI;
 import frc.robot.subsystems.shooter.ShooterOI;
 import frc.robot.subsystems.swerve.SwerveOI;
 import frc.robot.subsystems.swerve.odometric.OdometricSwerve;
@@ -24,8 +25,9 @@ import static frc.robot.ControlConstants.yDeadzone;
 import static frc.robot.ControlConstants.zDeadzone;
 import static frc.robot.utility.ExtendedMath.withHardDeadzone;
 
-public class GRCRobotContainer implements RobotContainer, SwerveOI {
-    public OdometricSwerve swerve = EntropySwerveFactory.makeSwerve();
+public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI {
+
+
     private ShuffleboardTab driverTab;
     private Joystick
             driveStick = new Joystick(0),
@@ -33,11 +35,22 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI {
 
 
     private JoystickButton
-            resetGyroButton = new JoystickButton(driveStick, 5);
+            resetGyroButton = new JoystickButton(driveStick, 5),
+            climberUpButton = new JoystickButton(controlStick,9),
+            climberDownButton = new JoystickButton(controlStick, 11);
+
+
+
+
+    public OdometricSwerve swerve = EntropySwerveFactory.makeSwerve();
+
+
+
+
+    public double climberSpeed;
 
     public GRCRobotContainer() {
         driverTab = Shuffleboard.getTab("Driver Controls");
-
         resetGyroButton.whenPressed(() -> swerve.resetPose());
         swerve.resetPose(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
 
@@ -57,6 +70,10 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI {
             swerve.moveFieldCentric(forwardSpeed, leftwardSpeed, counterClockwardSpeed);
         }, swerve);
     }
+    public void configureClimber(){
+        climberUpButton.whenPressed(()->{climberSpeed=1;}).whenReleased(()->{climberSpeed=0;});
+        climberDownButton.whenPressed(()->{climberSpeed=-1;}).whenReleased(()->{climberSpeed=0;});
+    }
 
     //Methods from OIs
     public double getX(){
@@ -67,5 +84,8 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI {
     }
     public double getZ(){
         return driveStick.getZ();
+    }
+    public double getClimberSpeed(){
+        return climberSpeed;
     }
 }
