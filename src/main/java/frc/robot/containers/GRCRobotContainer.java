@@ -13,6 +13,7 @@ import frc.robot.ControlConstants;
 import frc.robot.subsystems.climber.ClimberOI;
 import frc.robot.subsystems.shooter.ShooterOI;
 import frc.robot.subsystems.swerve.SwerveOI;
+import frc.robot.subsystems.swerve.commands.HardDeadzoneSwerveCommand;
 import frc.robot.subsystems.swerve.odometric.OdometricSwerve;
 import frc.robot.subsystems.swerve.odometric.OdometricWheelModule;
 import frc.robot.subsystems.swerve.odometric.factory.EntropySwerveFactory;
@@ -60,16 +61,10 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI {
 
     //Configuration
     public void configureSwerve(){
-        swerve.setDefaultCommand(createHardDeadzoneSwerveCommand());
+        swerve.setDefaultCommand(new HardDeadzoneSwerveCommand(swerve, this));
     }
-    private CommandBase createHardDeadzoneSwerveCommand(){
-        return new RunCommand(() -> {
-            var forwardSpeed = withHardDeadzone(-driveStick.getY(), yDeadzone) * ySensitivity;
-            var leftwardSpeed = withHardDeadzone(-driveStick.getX(), xDeadzone) * xSensitivity;
-            var counterClockwardSpeed = withHardDeadzone(-driveStick.getZ(), zDeadzone) * zSensitivity;
-            swerve.moveFieldCentric(forwardSpeed, leftwardSpeed, counterClockwardSpeed);
-        }, swerve);
-    }
+
+
     public void configureClimber(){
         climberUpButton.whenPressed(()->{climberSpeed=1;}).whenReleased(()->{climberSpeed=0;});
         climberDownButton.whenPressed(()->{climberSpeed=-1;}).whenReleased(()->{climberSpeed=0;});
