@@ -70,6 +70,8 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI {
         climberDownButton.whenPressed(()->{climberSpeed=-1;}).whenReleased(()->{climberSpeed=0;});
     }
 
+
+
     //Methods from OIs
     public double getX(){
         return driveStick.getX();
