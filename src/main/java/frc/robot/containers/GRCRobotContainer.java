@@ -115,7 +115,7 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
     }
     public boolean getIndexerActive() { return indexerActive;}
     public boolean getShooterActive() { return shooterActive;}
-    public double getTargetTurretOffset(){
+    public double getTargetTurretOffset(){ // target offset between turret and target, should be 0 for aiming directly at target
         return targetTurretOffset;
     }
     public double getTurretAngle(){
