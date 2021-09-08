@@ -12,7 +12,7 @@ public class TeleopIndexerCommand extends CommandBase {
     private double indexerSpeed;
     private double intakeSpeed;
     private boolean lastActive;
-    public TeleopIndexerCommand(Indexer indexer, IndexerOI oi, double indexerSpeed, double intakeSpeed){
+    public TeleopIndexerCommand(Indexer indexer, IndexerOI oi, Intake intake, double indexerSpeed, double intakeSpeed){
         this.indexer = indexer;
         this.oi = oi;
         addRequirements(indexer);

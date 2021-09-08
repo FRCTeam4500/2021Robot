@@ -4,7 +4,7 @@ import frc.robot.components.hardware.TalonSRXComponent;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.NetworkTableBallSensor;
 
-public class HardwareIndexerFactory implements IndexerFactory {
+public class HardwareIndexerFactory {
     /**
      *
      */
@@ -13,7 +13,7 @@ public class HardwareIndexerFactory implements IndexerFactory {
      *
      */
     private static final int INDEXER_MOTOR_PORT = 12;
-    public Indexer makeIndexer(){
+    public static Indexer makeIndexer(){
         return new Indexer(
             new TalonSRXComponent(INDEXER_MOTOR_PORT), 
             new NetworkTableBallSensor("Sensor0", BALL_SENSOR_THRESHOLD+5), 
