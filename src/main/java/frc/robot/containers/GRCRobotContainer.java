@@ -26,7 +26,12 @@ import frc.robot.subsystems.swerve.odometric.OdometricSwerve;
 import frc.robot.subsystems.swerve.odometric.factory.EntropySwerveFactory;
 import frc.robot.subsystems.intake.factory.HardwareIntakeFactory;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.turret.TurretOI;
+import frc.robot.subsystems.turret.factory.HardwareTurretFactory;
+import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.components.hardware.LimelightVisionComponent;
+import frc.robot.subsystems.turret.command.TurretAutoCommand;
 
 public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, ArmOI, IndexerOI, ShooterOI, TurretOI {
 
@@ -43,6 +48,7 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
             climberDownButton = new JoystickButton(controlStick, 11),
             intakeTrigger = new JoystickButton(driveStick, 1),
             shooterTrigger = new JoystickButton(controlStick, 1);
+    
 
 
 
@@ -52,13 +58,15 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
     private Indexer indexer = HardwareIndexerFactory.makeIndexer();
     private Intake intake = HardwareIntakeFactory.makeIntake();
     private Shooter shooter = HardwareShooterFactory.makeShooter();
+    private Turret turret = HardwareTurretFactory.makeTurret();
+    private VisionSubsystem vision = new VisionSubsystem(new LimelightVisionComponent());
 
     private boolean indexerActive;
     private boolean shooterActive;
     private double armAngle;
     private double climberSpeed;
-    private double targetTurretOffset;
     private double turretAngle;
+    private double targetTurretOffset;
 
 
     public GRCRobotContainer() {
@@ -68,6 +76,7 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
         configureClimber();
         configureArmIntakeIndexer();
         configureShooter();
+        configureTurret();
     }
 
     //Configuration
@@ -95,6 +104,10 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
         shooterTrigger.whenReleased(()->{shooterActive=false;});
     }
 
+    public void configureTurret() {
+        turret.setDefaultCommand(new TurretAutoCommand(turret, vision, this));
+    }
+
 
 
     //Methods from OIs
@@ -115,10 +128,6 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
     }
     public boolean getIndexerActive() { return indexerActive;}
     public boolean getShooterActive() { return shooterActive;}
-    public double getTargetTurretOffset(){ // target offset between turret and target, should be 0 for aiming directly at target
-        return targetTurretOffset;
-    }
-    public double getTurretAngle(){
-        return turretAngle;
-    }
+    public double getTurretAngle() { return turretAngle;}
+    public double getTargetTurretOffset() { return targetTurretOffset;}
 }
