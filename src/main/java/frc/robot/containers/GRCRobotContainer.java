@@ -10,6 +10,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.ControlConstants;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmOI;
+import frc.robot.subsystems.arm.commands.TeleopArmCommand;
+import frc.robot.subsystems.arm.factory.HardwareArmFactory;
 import frc.robot.subsystems.climber.ClimberOI;
 import frc.robot.subsystems.shooter.ShooterOI;
 import frc.robot.subsystems.swerve.SwerveOI;
@@ -26,7 +30,7 @@ import static frc.robot.ControlConstants.yDeadzone;
 import static frc.robot.ControlConstants.zDeadzone;
 import static frc.robot.utility.ExtendedMath.withHardDeadzone;
 
-public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI {
+public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, ArmOI {
 
 
     private ShuffleboardTab driverTab;
@@ -38,16 +42,17 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI {
     private JoystickButton
             resetGyroButton = new JoystickButton(driveStick, 5),
             climberUpButton = new JoystickButton(controlStick,9),
-            climberDownButton = new JoystickButton(controlStick, 11);
+            climberDownButton = new JoystickButton(controlStick, 11),
+            intakeTrigger = new JoystickButton(driveStick, 1);
 
 
 
 
     public OdometricSwerve swerve = EntropySwerveFactory.makeSwerve();
+    public Arm arm = new HardwareArmFactory().makeArm();
 
 
-
-
+    public double armAngle;
     public double climberSpeed;
 
     public GRCRobotContainer() {
@@ -64,10 +69,19 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI {
         swerve.setDefaultCommand(new HardDeadzoneSwerveCommand(swerve, this));
     }
 
+    public void configureArm(){
+        arm.setDefaultCommand(new TeleopArmCommand(arm, this));
+        intakeTrigger.whenPressed(()->{armAngle = Math.PI/2; });
+        intakeTrigger.whenReleased(()->{ armAngle = 0; });
+    }
 
     public void configureClimber(){
         climberUpButton.whenPressed(()->{climberSpeed=1;}).whenReleased(()->{climberSpeed=0;});
         climberDownButton.whenPressed(()->{climberSpeed=-1;}).whenReleased(()->{climberSpeed=0;});
+    }
+
+    public double getArmAngle(){
+        return armAngle;
     }
 
 
