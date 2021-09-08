@@ -6,31 +6,28 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.ControlConstants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmOI;
 import frc.robot.subsystems.arm.commands.TeleopArmCommand;
 import frc.robot.subsystems.arm.factory.HardwareArmFactory;
 import frc.robot.subsystems.climber.ClimberOI;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerOI;
+import frc.robot.subsystems.indexer.commands.TeleopIndexerCommand;
+import frc.robot.subsystems.indexer.factory.HardwareIndexerFactory;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterOI;
+import frc.robot.subsystems.shooter.command.ShootStraightCommand;
+import frc.robot.subsystems.shooter.factory.HardwareShooterFactory;
 import frc.robot.subsystems.swerve.SwerveOI;
 import frc.robot.subsystems.swerve.commands.HardDeadzoneSwerveCommand;
 import frc.robot.subsystems.swerve.odometric.OdometricSwerve;
-import frc.robot.subsystems.swerve.odometric.OdometricWheelModule;
 import frc.robot.subsystems.swerve.odometric.factory.EntropySwerveFactory;
+import frc.robot.subsystems.intake.factory.HardwareIntakeFactory;
+import frc.robot.subsystems.intake.Intake;
 
-import static frc.robot.ControlConstants.xSensitivity;
-import static frc.robot.ControlConstants.ySensitivity;
-import static frc.robot.ControlConstants.zSensitivity;
-import static frc.robot.ControlConstants.xDeadzone;
-import static frc.robot.ControlConstants.yDeadzone;
-import static frc.robot.ControlConstants.zDeadzone;
-import static frc.robot.utility.ExtendedMath.withHardDeadzone;
-
-public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, ArmOI {
+public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, ArmOI, IndexerOI, ShooterOI {
 
 
     private ShuffleboardTab driverTab;
@@ -43,36 +40,45 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
             resetGyroButton = new JoystickButton(driveStick, 5),
             climberUpButton = new JoystickButton(controlStick,9),
             climberDownButton = new JoystickButton(controlStick, 11),
-            intakeTrigger = new JoystickButton(driveStick, 1);
+            intakeTrigger = new JoystickButton(driveStick, 1),
+            shooterTrigger = new JoystickButton(controlStick, 1);
 
 
 
 
-    public OdometricSwerve swerve = EntropySwerveFactory.makeSwerve();
-    public Arm arm = new HardwareArmFactory().makeArm();
+    private OdometricSwerve swerve = EntropySwerveFactory.makeSwerve();
+    private Arm arm = HardwareArmFactory.makeArm();
+    private Indexer indexer = HardwareIndexerFactory.makeIndexer();
+    private Intake intake = HardwareIntakeFactory.makeIntake();
+    private Shooter shooter = HardwareShooterFactory.makeShooter();
 
+    private boolean indexerActive;
+    private boolean shooterActive;
+    private double armAngle;
+    private double climberSpeed;
 
-    public double armAngle;
-    public double climberSpeed;
 
     public GRCRobotContainer() {
         driverTab = Shuffleboard.getTab("Driver Controls");
-        resetGyroButton.whenPressed(() -> swerve.resetPose());
-        swerve.resetPose(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
 
         configureSwerve();
-
+        configureClimber();
+        configureArmIntakeIndexer();
+        configureShooter();
     }
 
     //Configuration
     public void configureSwerve(){
+        resetGyroButton.whenPressed(() -> swerve.resetPose());
+        swerve.resetPose(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
         swerve.setDefaultCommand(new HardDeadzoneSwerveCommand(swerve, this));
     }
 
-    public void configureArm(){
+    public void configureArmIntakeIndexer(){
         arm.setDefaultCommand(new TeleopArmCommand(arm, this));
-        intakeTrigger.whenPressed(()->{armAngle = Math.PI/2; });
-        intakeTrigger.whenReleased(()->{ armAngle = 0; });
+        indexer.setDefaultCommand(new TeleopIndexerCommand(indexer, this, intake,  1, 1));
+        intakeTrigger.whenPressed(()->{armAngle = Math.PI/2; indexerActive = true;  });
+        intakeTrigger.whenReleased(()->{armAngle = 0; indexerActive = false; });
     }
 
     public void configureClimber(){
@@ -80,8 +86,10 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
         climberDownButton.whenPressed(()->{climberSpeed=-1;}).whenReleased(()->{climberSpeed=0;});
     }
 
-    public double getArmAngle(){
-        return armAngle;
+    public void configureShooter(){
+        shooter.setDefaultCommand(new ShootStraightCommand(shooter, this));
+        shooterTrigger.whenPressed(()->{shooterActive=true;});
+        shooterTrigger.whenReleased(()->{shooterActive=false;});
     }
 
 
@@ -99,4 +107,9 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
     public double getClimberSpeed(){
         return climberSpeed;
     }
+    public double getArmAngle(){
+        return armAngle;
+    }
+    public boolean getIndexerActive() { return indexerActive;}
+    public boolean getShooterActive() { return shooterActive;}
 }

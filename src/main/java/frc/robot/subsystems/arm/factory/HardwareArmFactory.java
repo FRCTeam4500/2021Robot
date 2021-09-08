@@ -3,13 +3,13 @@ package frc.robot.subsystems.arm.factory;
 import frc.robot.components.hardware.TalonSRXComponent;
 import frc.robot.subsystems.arm.Arm;
 
-public class HardwareArmFactory implements ArmFactory {
+public class HardwareArmFactory {
     /**
      *
      */
     private static final int ARM_MOTOR_PORT = 8;
 
-    public Arm makeArm(){
+    public static Arm makeArm(){
 
         var srx = new TalonSRXComponent(ARM_MOTOR_PORT);
         srx.configReverseSoftLimitEnable(true);
