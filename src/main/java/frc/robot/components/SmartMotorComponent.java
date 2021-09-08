@@ -11,5 +11,5 @@ package frc.robot.components;
  * Add your docs here.
  */
 public interface SmartMotorComponent extends AngleGetterComponent, AngleSetterComponent,
-        OutputSetterComponent, OutputGetterComponent, AngularVelocityGetterComponent, AngularVelocitySetterComponent {
+        OutputGetterSetterComponent, AngularVelocityGetterComponent, AngularVelocitySetterComponent {
 }

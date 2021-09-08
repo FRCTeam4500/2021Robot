@@ -2,12 +2,13 @@ package frc.robot.subsystems.indexer;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.components.OutputGetterSetterComponent;
 import frc.robot.components.OutputSetterComponent;
 
 public class Indexer extends SubsystemBase {
-    private OutputSetterComponent motor;
+    private OutputGetterSetterComponent motor;
     BallSensor sensor0, sensor1, sensor2, sensor3, sensor4, sensor5;
-    public Indexer(OutputSetterComponent motor, BallSensor sensor0, BallSensor sensor1, BallSensor sensor2, BallSensor sensor3, BallSensor sensor4, BallSensor sensor5){
+    public Indexer(OutputGetterSetterComponent motor, BallSensor sensor0, BallSensor sensor1, BallSensor sensor2, BallSensor sensor3, BallSensor sensor4, BallSensor sensor5){
         this.motor = motor;
         this.sensor0 = sensor0;
         this.sensor1 = sensor1;
@@ -48,4 +49,5 @@ public class Indexer extends SubsystemBase {
         builder.addBooleanProperty("Sensor 1 Detects Ball", this::sensor1RegistersBall, null);
         builder.addBooleanProperty("Sensor 0 Detects Ball", this::sensor0RegistersBall, null);
     }
+    public double getSpeed(){return motor.getOutput();  }
 }
