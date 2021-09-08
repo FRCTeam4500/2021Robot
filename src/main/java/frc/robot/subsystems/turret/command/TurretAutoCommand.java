@@ -13,7 +13,7 @@ import java.util.function.DoubleSupplier;
 
 public class TurretAutoCommand extends PIDCommand {
     private VisionSubsystem limelight;
-    TurretAutoCommand(VisionSubsystem limelight, Turret turret, TurretOI oi){
+    TurretAutoCommand(Turret turret, VisionSubsystem limelight, TurretOI oi){
         super(new PIDController(-3, 0, 0), limelight::getHorizontalOffset, oi::getTargetTurretOffset, turret::setTurretOutput, limelight, turret);
     }
 }

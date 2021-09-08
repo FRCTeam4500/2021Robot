@@ -3,9 +3,9 @@ package frc.robot.subsystems.turret.factory;
 import frc.robot.components.hardware.TalonSRXComponent;
 import frc.robot.subsystems.turret.Turret;
 
-public class HardwareTurretFactory implements TurretFactory {
+public class HardwareTurretFactory {
     public final static int TURRET_MOTOR_PORT = 15;
-    public Turret makeTurret(){
+    public static Turret makeTurret(){
         var srx = new TalonSRXComponent(TURRET_MOTOR_PORT);
         srx.configForwardSoftLimitEnable(true);
         srx.configReverseSoftLimitEnable(true);
