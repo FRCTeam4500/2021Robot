@@ -26,8 +26,9 @@ import frc.robot.subsystems.swerve.odometric.OdometricSwerve;
 import frc.robot.subsystems.swerve.odometric.factory.EntropySwerveFactory;
 import frc.robot.subsystems.intake.factory.HardwareIntakeFactory;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.turret.TurretOI;
 
-public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, ArmOI, IndexerOI, ShooterOI {
+public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, ArmOI, IndexerOI, ShooterOI, TurretOI {
 
 
     private ShuffleboardTab driverTab;
@@ -56,6 +57,8 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
     private boolean shooterActive;
     private double armAngle;
     private double climberSpeed;
+    private double targetTurretOffset;
+    private double turretAngle;
 
 
     public GRCRobotContainer() {
@@ -112,4 +115,10 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
     }
     public boolean getIndexerActive() { return indexerActive;}
     public boolean getShooterActive() { return shooterActive;}
+    public double getTargetTurretOffset(){
+        return targetTurretOffset;
+    }
+    public double getTurretAngle(){
+        return turretAngle;
+    }
 }

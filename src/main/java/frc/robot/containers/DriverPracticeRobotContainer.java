@@ -74,6 +74,7 @@ public class DriverPracticeRobotContainer implements RobotContainer {
     resetGyroButton = new JoystickButton(driveStick, 5),
     backupIndexerButton = new JoystickButton(controlStick, 8),
     alignToLoadButton = new JoystickButton(driveStick, 3);
+
     
     private Intake intake = new HardwareIntakeFactory().makeIntake();
     private Arm arm = new HardwareArmFactory().makeArm();
@@ -421,8 +422,8 @@ public class DriverPracticeRobotContainer implements RobotContainer {
     private void configureTurret() {
         turret.setDefaultCommand(
             new PIDCommand(
-                new PIDController(-3, 0, 0), 
-                limelight::getHorizontalOffset,
+                new PIDController(-3, 0, 0),
+                    limelight::getHorizontalOffset,
                 this::getTurretRadianOffset, 
                 turret::setTurretOutput, 
                 turret,limelight));
