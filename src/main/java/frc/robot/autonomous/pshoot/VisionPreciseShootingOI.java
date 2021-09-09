@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.autonomous.VisionDistanceCalculator;
 
 /**
- * Add your docs here.
+ * Why is this an oi, it should be called shooter manager or smth
  */
 public class VisionPreciseShootingOI implements PreciseShootingOI {
 

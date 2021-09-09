@@ -7,6 +7,10 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.autonomous.GenericAutonUtilities;
+import frc.robot.autonomous.VisionDistanceCalculator;
+import frc.robot.autonomous.pshoot.Autonomous_PreciseShootingCommand;
+import frc.robot.autonomous.pshoot.VisionPreciseShootingOI;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmOI;
 import frc.robot.subsystems.arm.commands.TeleopArmCommand;
@@ -18,6 +22,7 @@ import frc.robot.subsystems.indexer.commands.TeleopIndexerCommand;
 import frc.robot.subsystems.indexer.factory.HardwareIndexerFactory;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterOI;
+import frc.robot.subsystems.shooter.command.PreciseShootingCommand;
 import frc.robot.subsystems.shooter.command.ShootStraightCommand;
 import frc.robot.subsystems.shooter.factory.HardwareShooterFactory;
 import frc.robot.subsystems.swerve.SwerveOI;
@@ -43,23 +48,21 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
 
 
     private JoystickButton
-            resetGyroButton = new JoystickButton(driveStick, 5),
-            climberUpButton = new JoystickButton(controlStick,9),
-            climberDownButton = new JoystickButton(controlStick, 11),
-            intakeTrigger = new JoystickButton(driveStick, 1),
-            shooterTrigger = new JoystickButton(controlStick, 1);
+            resetGyroButton,
+            climberUpButton,
+            climberDownButton,
+            intakeTrigger,
+            shooterTrigger;
     
 
-
-
-
-    private OdometricSwerve swerve = EntropySwerveFactory.makeSwerve();
-    private Arm arm = HardwareArmFactory.makeArm();
-    private Indexer indexer = HardwareIndexerFactory.makeIndexer();
-    private Intake intake = HardwareIntakeFactory.makeIntake();
-    private Shooter shooter = HardwareShooterFactory.makeShooter();
-    private Turret turret = HardwareTurretFactory.makeTurret();
-    private VisionSubsystem vision = new VisionSubsystem(new LimelightVisionComponent());
+    private OdometricSwerve swerve;
+    private Arm arm;
+    private Indexer indexer;
+    private Intake intake;
+    private Shooter shooter;
+    private Turret turret;
+    private VisionSubsystem vision;
+    private VisionPreciseShootingOI visionPreciseShooting;
 
     private boolean indexerActive;
     private boolean shooterActive;
@@ -72,7 +75,21 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
     public GRCRobotContainer() {
         driverTab = Shuffleboard.getTab("Driver Controls");
 
-        configureSwerve();
+        resetGyroButton = new JoystickButton(driveStick, 5); //initialize buttons
+        climberUpButton = new JoystickButton(controlStick,9);
+        climberDownButton = new JoystickButton(controlStick, 11);
+        intakeTrigger = new JoystickButton(driveStick, 1);
+        shooterTrigger = new JoystickButton(controlStick, 1);
+
+        swerve = EntropySwerveFactory.makeSwerve(); //initialize subsystems
+        arm = HardwareArmFactory.makeArm();
+        indexer = HardwareIndexerFactory.makeIndexer();
+        intake = HardwareIntakeFactory.makeIntake();
+        shooter = HardwareShooterFactory.makeShooter();
+        turret = HardwareTurretFactory.makeTurret();
+        vision = new VisionSubsystem(new LimelightVisionComponent());
+
+        configureSwerve(); //configure subsystem commands and controls
         configureClimber();
         configureArmIntakeIndexer();
         configureShooter();
@@ -99,7 +116,8 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
     }
 
     public void configureShooter(){
-        shooter.setDefaultCommand(new ShootStraightCommand(shooter, this));
+        visionPreciseShooting = new VisionPreciseShootingOI(GenericAutonUtilities.makeEntropyVisionDistanceCalculator(vision));
+        shooter.setDefaultCommand(new PreciseShootingCommand(shooter, indexer, visionPreciseShooting, this));
         shooterTrigger.whenPressed(()->{shooterActive=true;});
         shooterTrigger.whenReleased(()->{shooterActive=false;});
     }
