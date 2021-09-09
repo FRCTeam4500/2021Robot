@@ -34,6 +34,7 @@ public class ClimberCommand extends CommandBase {
         climber.setSpeed(oiSpeed);
     }
 
+
     @Override
     public boolean isFinished() {
         // TODO: Make this return true when this Command no longer needs to run execute()
@@ -42,6 +43,6 @@ public class ClimberCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-
+        climber.setSpeed(0);
     }
 }

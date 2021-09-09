@@ -34,5 +34,9 @@ public class PreciseShootingCommand extends CommandBase {
             }
         }
     }
+    public void end(boolean interrupted){
+        shooter.run(0,0);
+        indexer.setSpeed(0);
+    }
 }
 

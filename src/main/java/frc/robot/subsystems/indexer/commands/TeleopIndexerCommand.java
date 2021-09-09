@@ -19,7 +19,7 @@ public class TeleopIndexerCommand extends CommandBase {
     }
     public void execute(){
 
-        if(oi.getIndexerActive()){
+        if(oi.getIndexerActive() && oi.useSensors()){ // use sensors
             if (indexer.sensor0RegistersBall() && !indexer.sensor5RegistersBall()){
                 indexer.setSpeed(indexerSpeed);
                 intake.setSpeed(0);
@@ -33,11 +33,19 @@ public class TeleopIndexerCommand extends CommandBase {
                 intake.setSpeed(intakeSpeed);
             }
         }
-        else{
+        else if (oi.getIndexerActive() && !oi.useSensors()){ //dont use sensors
+            indexer.setSpeed(1);
+            intake.setSpeed(1);
+        }
+        else { //stop indexer
             if (indexer.getSpeed() != 0.0 && oi.getIndexerActive() == false && lastActive == true) { //only runs on the cycle when the indexer turns off
                 indexer.setSpeed(0); //so that it doesnt lock the indexer at 0
             }
         }
         lastActive = oi.getIndexerActive();
+    }
+    public void end(boolean interrupted){
+        intake.setSpeed(0);
+        indexer.setSpeed(0);
     }
 }

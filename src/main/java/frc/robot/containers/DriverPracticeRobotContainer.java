@@ -491,7 +491,7 @@ public class DriverPracticeRobotContainer implements RobotContainer {
                         interrupted -> arm.setAngle(0), 
                         () -> false, 
                         arm)), 
-                    new FunctionalCommand(
+                    new FunctionalCommand( //regular intake
                         () -> {
                             indexer.setSpeed(1);
                             intake.setSpeed(-1);

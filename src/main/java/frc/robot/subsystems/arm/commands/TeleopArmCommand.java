@@ -15,4 +15,7 @@ public class TeleopArmCommand extends CommandBase {
     public void execute(){
         arm.setAngle(oi.getArmAngle());
     }
+    public void end(boolean interrupted){
+        arm.setAngle(0);
+    }
 }
