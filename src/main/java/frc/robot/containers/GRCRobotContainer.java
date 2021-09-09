@@ -24,8 +24,10 @@ import frc.robot.subsystems.arm.factory.HardwareArmFactory;
 import frc.robot.subsystems.climber.ClimberOI;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerOI;
+import frc.robot.subsystems.indexer.commands.IndexerRunCommand;
 import frc.robot.subsystems.indexer.commands.TeleopIndexerCommand;
 import frc.robot.subsystems.indexer.factory.HardwareIndexerFactory;
+import frc.robot.subsystems.intake.command.IntakeArmRunCommand;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterOI;
 import frc.robot.subsystems.shooter.command.PreciseShootingCommand;
@@ -51,7 +53,8 @@ import frc.robot.subsystems.turret.command.TurretAutoCommand;
  * we don't want the containers to become cluttered messes.
  * See the flowchart for reference on how to design commands and subsystems.
  * Try to avoid inlining anonymous command here, create an actual class for the command if its more than like 3 lines.
- * Try to avoid directly controlling subsystems from here, they should be controlled through their default commands.
+ * You can directly control subsystems from here, but try to make their normal behavior controlled by their default command, its called default for a reason
+ * Also if controlling a subsystem requires more than 1 line of code in a lambda, just make a command, its worth it to save on verbosity
  *
  * */
 
@@ -69,7 +72,11 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
             climberUpButton,
             climberDownButton,
             intakeTrigger,
-            shooterTrigger;
+            shooterTrigger,
+            intakeInButton,
+            intakeOutButton,
+            indexerInButton,
+            indexerOutButton;
     
 
     private OdometricSwerve swerve;
@@ -122,6 +129,7 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
         configureArmIntakeIndexer();
         configureShooter();
         configureTurret();
+
     }
 
     //Configuration
@@ -134,8 +142,15 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
     public void configureArmIntakeIndexer(){
         arm.setDefaultCommand(new TeleopArmCommand(arm, this));
         indexer.setDefaultCommand(new TeleopIndexerCommand(indexer, this, intake,  1, 1));
-        intakeTrigger.whenPressed(()->{armAngle = Math.PI/2; indexerActive = true;  });
-        intakeTrigger.whenReleased(()->{armAngle = 0; indexerActive = false; });
+
+        intakeTrigger.whenPressed(() -> {armAngle = Math.PI/2; indexerActive = true;  }); //default indexer
+        intakeTrigger.whenReleased(() -> {armAngle = 0; indexerActive = false; });
+
+
+        intakeInButton.whenHeld(new IntakeArmRunCommand(intake, arm, 1));
+        intakeOutButton.whenHeld(new IntakeArmRunCommand(intake, arm, 1));
+        indexerInButton.whenHeld(new IndexerRunCommand(indexer,1));
+        indexerOutButton.whenPressed(new IndexerRunCommand(indexer, -1));
     }
 
     public void configureClimber(){
@@ -146,8 +161,8 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
     public void configureShooter(){
         visionPreciseShooting = new VisionPreciseShootingOI(visionDistanceCalculator);
         shooter.setDefaultCommand(new PreciseShootingCommand(shooter, indexer, visionPreciseShooting, this));
-        shooterTrigger.whenPressed(()->{shooterActive=true;});
-        shooterTrigger.whenReleased(()->{shooterActive=false;});
+        shooterTrigger.whenPressed(() -> shooterActive=true);
+        shooterTrigger.whenReleased(() -> shooterActive=false);
     }
 
     public void configureTurret() {
