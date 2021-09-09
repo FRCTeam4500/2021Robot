@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
@@ -15,6 +16,10 @@ import frc.robot.ControlConstants;
 import frc.robot.ControlOI;
 import frc.robot.autonomous.GenericAutonUtilities;
 import frc.robot.autonomous.VisionDistanceCalculator;
+import frc.robot.autonomous.autonCommands.AwayFromCenterMoveBackwardAndShootCommand;
+import frc.robot.autonomous.autonCommands.AwayFromCenterMoveForwardAndShootCommand;
+import frc.robot.autonomous.autonCommands.CitrusCompatibleCommand;
+import frc.robot.autonomous.autonCommands.ShootAndCrossTheLineCommand;
 import frc.robot.autonomous.pshoot.Autonomous_PreciseShootingCommand;
 import frc.robot.autonomous.pshoot.VisionPreciseShootingOI;
 import frc.robot.subsystems.arm.Arm;
@@ -129,6 +134,7 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
         configureArmIntakeIndexer();
         configureShooter();
         configureTurret();
+        configureAutonomous();
 
     }
 
@@ -190,9 +196,19 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
                 builder.addDoubleProperty("Turret Radian Offset", () -> getTargetTurretOffset(), value -> { targetTurretOffset = value; });
             }
         });
-
     }
 
+    public void configureAutonomous(){
+        SendableChooser autonomousChooser = new SendableChooser();
+
+        autonomousChooser.addOption("Shoot and Cross the line", new ShootAndCrossTheLineCommand(swerve, shooter, indexer));
+        autonomousChooser.addOption("Away from center move forward and shoot", new AwayFromCenterMoveForwardAndShootCommand(swerve, shooter, indexer));
+        autonomousChooser.addOption("Away from center move backward and shoot", new AwayFromCenterMoveBackwardAndShootCommand(swerve, shooter, indexer, visionPreciseShooting));
+        autonomousChooser.addOption("Citrus Compatible Primary", new CitrusCompatibleCommand(swerve, arm, indexer, intake, turret, this, shooter, visionPreciseShooting));
+    
+
+
+    }
 
     //Methods from OIs
     public double getX(){
@@ -215,6 +231,7 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
     public boolean getShooterActive() { return shooterActive;}
     public double getTurretAngle() { return turretAngle;}
     public double getTargetTurretOffset() { return targetTurretOffset;}
+    public void setTargetTurretOffset(double set){targetTurretOffset = set;}
 
     public double getxDeadzone(){ return xDeadzone;};
     public double getyDeadzone(){ return yDeadzone;};
