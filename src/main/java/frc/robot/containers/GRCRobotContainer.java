@@ -105,9 +105,9 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
     }
 
     public void configureTurret() {
+        targetTurretOffset = 0;
         turret.setDefaultCommand(new TurretAutoCommand(turret, vision, this));
     }
-
 
 
     //Methods from OIs
