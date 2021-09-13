@@ -21,35 +21,35 @@ import static frc.robot.autonomous.GenericAutonUtilities.createDefaultController
 
 public class CitrusCompatibleCommand extends SequentialCommandGroup {
     public CitrusCompatibleCommand(OdometricSwerve swerve, Arm arm, Indexer indexer, Intake intake, Turret turret, TurretOI toi, Shooter shooter, VisionPreciseShootingOI soi){
-
-        addCommands(new InstantCommand(()->toi.setTargetTurretOffset(Math.toRadians(3.5))));
-        addCommands(new InstantCommand(() -> swerve.resetPose(new Pose2d(12.565, -4.875, new Rotation2d(Math.PI))), swerve));
-        addCommands(new OdometricSwerve_AdvancedFollowTrajectoryCommand(
-                swerve,
-                createDefaultControllerBuilder()
-                        .withEndRotation(new Rotation2d(Math.PI + Math.PI * 1.2 / 7))
-                        .withTrajectory(tryGetDeployedTrajectory("CitrusCompatiblePart1"))
-                        .withMaxVelocity(4.0)
-                        .buildController()));
-        addCommands(new InstantCommand(() -> swerve.moveFieldCentric(0, 0, 0), swerve));
-        addCommands(new InstantCommand(() -> arm.setAngle(Math.PI / 2.1), arm));
-        addCommands(new ParallelRaceGroup(new Autonomous_IndexBallsCommand(indexer, intake, 1.0, 0.9)
-                .raceWith(
-                        new RunCommand(() -> swerve.moveFieldCentric(0.1, -0.25 * 2, 0), swerve)
-                                .withTimeout(2)
-                                .andThen(
-                                        new RunCommand(() -> swerve.moveFieldCentric(0.1 * 2.2, -0.25 * 2.2, 0), swerve)
-                                                .withTimeout(0.7)
+        super(new InstantCommand(() -> toi.setTargetTurretOffset(Units.degreesToRadians(3.5)))
+                .andThen(new InstantCommand(() -> swerve.resetPose(new Pose2d(12.565, -4.875, new Rotation2d(Math.PI))), swerve))
+                .andThen(new Autonomous_PreciseShootingCommand(shooter, indexer, -3390, -2520, 1.47, 500).withTimeout(3))
+                .andThen(new OdometricSwerve_AdvancedFollowTrajectoryCommand(
+                        swerve,
+                        createDefaultControllerBuilder()
+                                .withEndRotation(new Rotation2d(Math.PI + Math.PI * 1.2 / 7))
+                                .withTrajectory(tryGetDeployedTrajectory("CitrusCompatiblePart1"))
+                                .withMaxVelocity(4.0)
+                                .buildController()))
+                .andThen(() -> swerve.moveFieldCentric(0, 0, 0), swerve).andThen(() -> arm.setAngle(Math.PI / 2.1), arm)
+                .andThen(
+                        new Autonomous_IndexBallsCommand(indexer, intake, 1.0, 0.9)
+                                .raceWith(
+                                        new RunCommand(() -> swerve.moveFieldCentric(0.1, -0.25 * 2, 0), swerve)
+                                                .withTimeout(2)
                                                 .andThen(
-                                                        new RunCommand(() -> swerve.moveFieldCentric(0, 0, 1))
-                                                                .withTimeout(1))
-                                                .andThen(
-                                                        new RunCommand(() -> swerve.moveFieldCentric(-0.1, 0, 0))
-                                                                .withTimeout(1))
-                                                .andThen(new WaitCommand(1))
-                                                .andThen(
-                                                        new RunCommand(() -> swerve.moveFieldCentric(0, 0, -2))
-                                                                .withTimeout(1)))))
+                                                        new RunCommand(() -> swerve.moveFieldCentric(0.1 * 2.2, -0.25 * 2.2, 0), swerve)
+                                                                .withTimeout(0.7)
+                                                                .andThen(
+                                                                        new RunCommand(() -> swerve.moveFieldCentric(0, 0, 1))
+                                                                                .withTimeout(1))
+                                                                .andThen(
+                                                                        new RunCommand(() -> swerve.moveFieldCentric(-0.1, 0, 0))
+                                                                                .withTimeout(1))
+                                                                .andThen(new WaitCommand(1))
+                                                                .andThen(
+                                                                        new RunCommand(() -> swerve.moveFieldCentric(0, 0, -2))
+                                                                                .withTimeout(1)))))
                 .andThen(() -> toi.setTargetTurretOffset(Units.degreesToRadians(3.0)))
                 .andThen(() -> arm.setAngle(0), arm)
                 .andThen(() -> intake.setSpeed(0), intake)
