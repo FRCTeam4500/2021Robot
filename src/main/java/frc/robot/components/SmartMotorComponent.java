@@ -10,6 +10,6 @@ package frc.robot.components;
 /**
  * Add your docs here.
  */
-public interface SmartMotorComponent extends AngleGetterComponent, AngleSetterComponent,
+public interface SmartMotorComponent extends AngleGetterComponent, AngleSetterComponent, AngleGetterSetterComponent,
         OutputGetterSetterComponent, AngularVelocityGetterComponent, AngularVelocitySetterComponent {
 }

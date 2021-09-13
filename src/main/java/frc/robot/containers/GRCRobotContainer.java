@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.ControlConstants;
@@ -51,6 +54,7 @@ import frc.robot.subsystems.turret.factory.HardwareTurretFactory;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.components.hardware.LimelightVisionComponent;
 import frc.robot.subsystems.turret.command.TurretAutoCommand;
+import frc.robot.utility.ValueGetterCommand;
 
 /**
  * GRC robot container
@@ -93,6 +97,8 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
     private VisionSubsystem vision;
     private VisionPreciseShootingOI visionPreciseShooting;
     private VisionDistanceCalculator visionDistanceCalculator;
+    private SubsystemBase valueGetter;
+
 
     private boolean indexerActive;
     private boolean shooterActive;
@@ -115,10 +121,14 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
         driverTab = Shuffleboard.getTab("Driver Controls");
 
         resetGyroButton = new JoystickButton(driveStick, 5); //initialize buttons
-        climberUpButton = new JoystickButton(controlStick,9);
-        climberDownButton = new JoystickButton(controlStick, 11);
         intakeTrigger = new JoystickButton(driveStick, 1);
         shooterTrigger = new JoystickButton(controlStick, 1);
+        intakeInButton = new JoystickButton(driveStick, 12);
+        intakeOutButton = new JoystickButton(driveStick, 11);
+        indexerInButton = new JoystickButton(controlStick, 10);
+        indexerOutButton = new JoystickButton(controlStick, 9);
+        climberUpButton = new JoystickButton(controlStick, 12);
+        climberDownButton = new JoystickButton(controlStick,11);
 
         swerve = EntropySwerveFactory.makeSwerve(); //initialize subsystems
         arm = HardwareArmFactory.makeArm();
@@ -128,6 +138,10 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
         turret = HardwareTurretFactory.makeTurret();
         vision = new VisionSubsystem(new LimelightVisionComponent());
         visionDistanceCalculator = GenericAutonUtilities.makeEntropyVisionDistanceCalculator(vision);
+        valueGetter = new SubsystemBase(){
+
+        };
+        valueGetter.setDefaultCommand(new ValueGetterCommand("Arm Angle", () -> arm.getAngle(), valueGetter));
 
         configureSwerve(); //configure subsystem commands and controls
         configureClimber();
@@ -149,7 +163,7 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
         arm.setDefaultCommand(new TeleopArmCommand(arm, this));
         indexer.setDefaultCommand(new TeleopIndexerCommand(indexer, this, intake,  1, 1));
 
-        intakeTrigger.whenPressed(() -> {armAngle = Math.PI/2; indexerActive = true;  }); //default indexer
+        intakeTrigger.whenPressed(() -> {armAngle = Math.PI/3; indexerActive = true;  }); //default indexer
         intakeTrigger.whenReleased(() -> {armAngle = 0; indexerActive = false; });
 
 
@@ -196,6 +210,7 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
                 builder.addDoubleProperty("Turret Radian Offset", () -> getTargetTurretOffset(), value -> { targetTurretOffset = value; });
             }
         });
+
     }
 
     public void configureAutonomous(){

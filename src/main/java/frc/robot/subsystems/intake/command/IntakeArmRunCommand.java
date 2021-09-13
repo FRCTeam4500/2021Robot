@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake.command;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.intake.Intake;
@@ -15,6 +16,7 @@ public class IntakeArmRunCommand extends CommandBase {
         this.speed = speed;
     }
     public void execute(){
+
         arm.setAngle(Math.PI/2);
         intake.setSpeed(speed);
     }
