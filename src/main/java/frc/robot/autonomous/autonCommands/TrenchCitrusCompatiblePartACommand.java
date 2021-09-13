@@ -15,7 +15,7 @@ import static frc.robot.autonomous.ExtendedTrajectoryUtilities.tryGetDeployedTra
 import static frc.robot.autonomous.GenericAutonUtilities.createDefaultControllerBuilder;
 
 public class TrenchCitrusCompatiblePartACommand extends SequentialCommandGroup {
-    TrenchCitrusCompatiblePartACommand(OdometricSwerve swerve, Shooter shooter, Indexer indexer, Intake intake, Arm arm, VisionPreciseShootingOI visionPreciseShootingOI){
+    public TrenchCitrusCompatiblePartACommand(OdometricSwerve swerve, Shooter shooter, Indexer indexer, Intake intake, Arm arm, VisionPreciseShootingOI visionPreciseShootingOI){
         super(new TrenchCitrusPart1Command(swerve, shooter, indexer, intake, arm, visionPreciseShootingOI)
                 .andThen(new OdometricSwerve_AdvancedFollowTrajectoryCommand(
                         swerve,

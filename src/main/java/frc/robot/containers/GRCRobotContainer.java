@@ -19,10 +19,7 @@ import frc.robot.ControlConstants;
 import frc.robot.ControlOI;
 import frc.robot.autonomous.GenericAutonUtilities;
 import frc.robot.autonomous.VisionDistanceCalculator;
-import frc.robot.autonomous.autonCommands.AwayFromCenterMoveBackwardAndShootCommand;
-import frc.robot.autonomous.autonCommands.AwayFromCenterMoveForwardAndShootCommand;
-import frc.robot.autonomous.autonCommands.CitrusCompatibleCommand;
-import frc.robot.autonomous.autonCommands.ShootAndCrossTheLineCommand;
+import frc.robot.autonomous.autonCommands.*;
 import frc.robot.autonomous.pshoot.Autonomous_PreciseShootingCommand;
 import frc.robot.autonomous.pshoot.VisionPreciseShootingOI;
 import frc.robot.subsystems.arm.Arm;
@@ -219,10 +216,12 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
         autonomousChooser.addOption("Shoot and Cross the line", new ShootAndCrossTheLineCommand(swerve, shooter, indexer));
         autonomousChooser.addOption("Away from center move forward and shoot", new AwayFromCenterMoveForwardAndShootCommand(swerve, shooter, indexer));
         autonomousChooser.addOption("Away from center move backward and shoot", new AwayFromCenterMoveBackwardAndShootCommand(swerve, shooter, indexer, visionPreciseShooting));
-        autonomousChooser.addOption("Citrus Compatible Primary", new CitrusCompatibleCommand(swerve, arm, indexer, intake, turret, this, shooter, visionPreciseShooting));
-    
+        autonomousChooser.addOption("Citrus Compatible Primary", new CitrusCompatibleCommand(swerve, arm, indexer, intake, this, shooter, visionPreciseShooting));
+        autonomousChooser.addOption("Citrus Compatible Secondary", new CitrusCompatibleSecondaryCommand(swerve, shooter, indexer, intake, arm, visionPreciseShooting, this));
+        autonomousChooser.addOption("Trench Citrus Compatible Secondary", new TrenchCitrusCompatiblePartACommand(swerve, shooter, indexer, intake, arm, visionPreciseShooting));
+        autonomousChooser.addOption("Trench Citrus Compatible Secondary", new TrenchCitrusCompatibleBCommand(swerve, shooter, indexer, intake, arm, visionPreciseShooting));
 
-
+        SmartDashboard.putData("Selected Auto", autonomousChooser);
     }
 
     //Methods from OIs

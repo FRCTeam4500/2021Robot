@@ -17,7 +17,7 @@ public class IntakeArmRunCommand extends CommandBase {
     }
     public void execute(){
 
-        arm.setAngle(Math.PI/2);
+        arm.setAngle(Math.PI/3);
         intake.setSpeed(speed);
     }
     public void end(boolean interrupted){

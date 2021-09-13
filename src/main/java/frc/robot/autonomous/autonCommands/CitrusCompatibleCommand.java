@@ -13,14 +13,13 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.swerve.odometric.OdometricSwerve;
 import frc.robot.subsystems.swerve.odometric.command.OdometricSwerve_AdvancedFollowTrajectoryCommand;
-import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.turret.TurretOI;
 
 import static frc.robot.autonomous.ExtendedTrajectoryUtilities.tryGetDeployedTrajectory;
 import static frc.robot.autonomous.GenericAutonUtilities.createDefaultControllerBuilder;
 
 public class CitrusCompatibleCommand extends SequentialCommandGroup {
-    public CitrusCompatibleCommand(OdometricSwerve swerve, Arm arm, Indexer indexer, Intake intake, Turret turret, TurretOI toi, Shooter shooter, VisionPreciseShootingOI soi){
+    public CitrusCompatibleCommand(OdometricSwerve swerve, Arm arm, Indexer indexer, Intake intake, TurretOI toi, Shooter shooter, VisionPreciseShootingOI soi){
         super(new InstantCommand(() -> toi.setTargetTurretOffset(Units.degreesToRadians(3.5)))
                 .andThen(new InstantCommand(() -> swerve.resetPose(new Pose2d(12.565, -4.875, new Rotation2d(Math.PI))), swerve))
                 .andThen(new Autonomous_PreciseShootingCommand(shooter, indexer, -3390, -2520, 1.47, 500).withTimeout(3))
