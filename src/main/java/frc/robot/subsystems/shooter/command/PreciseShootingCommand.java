@@ -17,7 +17,7 @@ public class PreciseShootingCommand extends CommandBase {
         this.indexer = indexer;
         this.oi = oi;
         this.shoi = shoi;
-        addRequirements(shooter, indexer);
+        addRequirements(shooter);
     }
 
     public void execute() {
@@ -32,6 +32,10 @@ public class PreciseShootingCommand extends CommandBase {
             } else {
                 indexer.setSpeed(0);
             }
+        }
+        else{
+            shooter.run(0,0);
+            indexer.setSpeed(0);
         }
     }
     public void end(boolean interrupted){

@@ -11,41 +11,34 @@ public class TeleopIndexerCommand extends CommandBase {
     private Intake intake;
     private double indexerSpeed;
     private double intakeSpeed;
-    private boolean lastActive;
     public TeleopIndexerCommand(Indexer indexer, IndexerOI oi, Intake intake, double indexerSpeed, double intakeSpeed){
         this.indexer = indexer;
         this.intake = intake;
         this.oi = oi;
         this.indexerSpeed = indexerSpeed;
-        this.intakeSpeed = intakeSpeed;
+        this.intakeSpeed = -intakeSpeed;
         addRequirements(indexer, intake);
     }
     public void execute(){
 
         if(oi.getIndexerActive() && oi.useSensors()){ // use sensors
-            if (indexer.sensor0RegistersBall() && !indexer.sensor5RegistersBall()){
-                indexer.setSpeed(indexerSpeed);
+            if(indexer.sensor0RegistersBall()){
+                indexer.setSpeed(1);
                 intake.setSpeed(0);
-            }
-            else if(indexer.sensor1RegistersBall() ||
-                    indexer.sensor2RegistersBall() ||
-                    indexer.sensor3RegistersBall() ||
-                    indexer.sensor4RegistersBall() ||
-                    indexer.sensor5RegistersBall()){
+            }else{
                 indexer.setSpeed(0);
                 intake.setSpeed(intakeSpeed);
             }
         }
         else if (oi.getIndexerActive() && !oi.useSensors()){ //dont use sensors
+            intake.setSpeed(intakeSpeed);
             indexer.setSpeed(1);
-            intake.setSpeed(1);
+
         }
-        else { //stop indexer
-            if (indexer.getSpeed() != 0.0 && oi.getIndexerActive() == false && lastActive == true) { //only runs on the cycle when the indexer turns off
-                indexer.setSpeed(0); //so that it doesnt lock the indexer at 0
-            }
+        else{
+            indexer.setSpeed(0);
+            intake.setSpeed(0);
         }
-        lastActive = oi.getIndexerActive();
     }
     public void end(boolean interrupted){
         intake.setSpeed(0);

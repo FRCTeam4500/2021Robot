@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.indexer.Indexer;
 
-public class IndexerRunCommand extends CommandBase {
+public class IndexerRunSensorCommand extends CommandBase {
     private Indexer indexer;
     private double speed;
-    public IndexerRunCommand(Indexer indexer, double speed){
+    public IndexerRunSensorCommand(Indexer indexer, double speed){
         this.indexer = indexer;
         this.speed = speed;
 
@@ -16,6 +16,9 @@ public class IndexerRunCommand extends CommandBase {
         indexer.setSpeed(speed);
     }
 
+    public boolean isFinished(){
+        return !indexer.sensor0RegistersBall();
+    }
     public void end(boolean interrupted){
         indexer.setSpeed(0);
     }
