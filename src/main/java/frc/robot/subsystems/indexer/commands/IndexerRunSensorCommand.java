@@ -14,6 +14,12 @@ public class IndexerRunSensorCommand extends CommandBase {
     }
     public void execute(){
         indexer.setSpeed(speed);
+        if (indexer.sensor0RegistersBall()){
+            indexer.setSpeed(1);
+        }
+        else{
+            indexer.setSpeed(0);
+        }
     }
 
     public boolean isFinished(){
