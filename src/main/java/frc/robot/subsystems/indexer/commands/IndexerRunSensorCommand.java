@@ -26,7 +26,8 @@ public class IndexerRunSensorCommand extends CommandBase {
     }
 
     public boolean isFinished(){
-        return !indexer.sensor0RegistersBall();
+        return false;
+        //!indexer.sensor0RegistersBall();
     }
     public void end(boolean interrupted){
         indexer.setSpeed(0);

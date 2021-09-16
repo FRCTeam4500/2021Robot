@@ -161,13 +161,13 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
     }
 
     public void configureArmIntakeIndexer(){
-        arm.setDefaultCommand(new TeleopArmCommand(arm, this));
-        //TeleopIndexerCommand indexerCommand = new TeleopIndexerCommand(indexer, this, intake,  1, 0.6);
-        //SmartDashboard.putData("indexer command", indexerCommand);
-        //indexer.setDefaultCommand(indexerCommand);
+        arm.setDefaultCommand(new TeleopArmCommand(arm, this));//after this
+        /*TeleopIndexerCommand indexerCommand = new TeleopIndexerCommand(indexer, this, intake,  1, 0.6);
+        SmartDashboard.putData("indexer command", indexerCommand);
+        indexer.setDefaultCommand(indexerCommand);
 
-        //intakeTrigger.whenPressed(() -> {armAngle = Math.PI/2.8; indexerActive = true;}); //default indexer
-        /**
+        intakeTrigger.whenPressed(() -> {armAngle = Math.PI/2.8; indexerActive = true;}); //default indexer
+        
         intakeTrigger.whenPressed(() -> {
             armAngle = Math.PI/2.8;
             if (useFancyIntakeCommand) {
@@ -185,9 +185,9 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
                 intake.setSpeed(0.6);
                 indexer.setSpeed(1);
             }
-        });
-         */
-
+        });*/
+         //to here
+        
         intakeTrigger.whenHeld(
                 (new ConditionalCommand(
                         new ConditionalCommand(
@@ -199,9 +199,9 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
                         )));
 
 
-
-//        intakeTrigger.whenReleased(new IntakeArmRunCommand(intake, arm, 0).alongWith(new IndexerRunCommand(indexer, 0))
-//                .alongWith(new InstantCommand(()->arm.setAngle(0))));
+//also these 2
+        //intakeTrigger.whenReleased(new IntakeArmRunCommand(intake, arm, 0).alongWith(new IndexerRunCommand(indexer, 0))
+                //.alongWith(new InstantCommand(()->arm.setAngle(0))));
 
 
         intakeInButton.whenHeld(new IntakeArmRunCommand(intake, arm, -0.6));

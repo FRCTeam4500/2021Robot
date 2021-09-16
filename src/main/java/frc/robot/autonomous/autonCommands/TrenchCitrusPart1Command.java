@@ -34,7 +34,7 @@ public class TrenchCitrusPart1Command extends SequentialCommandGroup {
                                         .withMaxVelocity(2)
                                         .buildController()))
                                 .deadlineWith(
-                                        new Autonomous_ForceIndexBallsCommand(indexer, intake, arm, 1, 0.9, Math.PI/2.1)
+                                        new Autonomous_ForceIndexBallsCommand(indexer, intake, arm, 1, -0.9, Math.PI/2.8)
                                 )));
     }
 }
