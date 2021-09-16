@@ -13,8 +13,11 @@ public class IndexerRunSensorCommand extends CommandBase {
 
     }
     public void execute(){
-        indexer.setSpeed(speed);
-        if (indexer.sensor0RegistersBall()){
+
+        if (indexer.sensor0RegistersBall() && speed != 0){
+            indexer.setSpeed(speed);
+        }
+        else if (indexer.sensor0RegistersBall() && speed == 0){
             indexer.setSpeed(1);
         }
         else{
