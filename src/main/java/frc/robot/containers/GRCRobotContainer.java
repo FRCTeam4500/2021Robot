@@ -10,10 +10,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.ControlConstants;
@@ -120,6 +117,8 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
     private double zSensitivity = ControlConstants.zSensitivity;
 
     private boolean useFancyIntakeCommand = true;
+
+    private SendableChooser<Command> autonomousChooser;
 
 
     public GRCRobotContainer() {
@@ -253,8 +252,7 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
     }
 
     public void configureAutonomous(){
-        SendableChooser autonomousChooser = new SendableChooser();
-
+        autonomousChooser = new SendableChooser<>();
         autonomousChooser.addOption("Shoot and Cross the line", new ShootAndCrossTheLineCommand(swerve, shooter, indexer));
         autonomousChooser.addOption("Away from center move forward and shoot", new AwayFromCenterMoveForwardAndShootCommand(swerve, shooter, indexer));
         autonomousChooser.addOption("Away from center move backward and shoot", new AwayFromCenterMoveBackwardAndShootCommand(swerve, shooter, indexer, visionPreciseShooting));
@@ -262,8 +260,12 @@ public class GRCRobotContainer implements RobotContainer, SwerveOI, ClimberOI, A
         autonomousChooser.addOption("Citrus Compatible Secondary", new CitrusCompatibleSecondaryCommand(swerve, shooter, indexer, intake, arm, visionPreciseShooting, this));
         autonomousChooser.addOption("Trench Citrus Compatible Primary", new TrenchCitrusCompatiblePartACommand(swerve, shooter, indexer, intake, arm, visionPreciseShooting));
         autonomousChooser.addOption("Trench Citrus Compatible Secondary", new TrenchCitrusCompatibleBCommand(swerve, shooter, indexer, intake, arm, visionPreciseShooting));
-
         SmartDashboard.putData("Selected Auto", autonomousChooser);
+    }
+
+    @Override
+    public Command getAutonomousCommand() {
+        return autonomousChooser.getSelected();
     }
 
     //Methods from OIs
